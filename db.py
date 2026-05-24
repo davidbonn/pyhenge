@@ -43,7 +43,7 @@ class DB:
                 )
             """)
             cursor.execute("""
-                CREATE INDEX IF NOT EXISTS idx_user_short_name ON users (short_name)
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_user_short_name ON users (short_name)
             """)
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS rooms (
@@ -53,7 +53,7 @@ class DB:
                 )
             """)
             cursor.execute("""
-                CREATE INDEX IF NOT EXISTS idx_room_name ON rooms (name)
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_room_name ON rooms (name)
             """)
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS messages (
@@ -159,10 +159,13 @@ class DB:
 
     def new_room(self, name: str, options: dict) -> int:
         with cursor_for(self.conn) as cursor:
-            cursor.execute("""
-                INSERT INTO rooms (name, options) VALUES (?, ?)
-            """, (name, DB.to_json(options)))
-            self.commit()
+            try:
+                cursor.execute("""
+                    INSERT INTO rooms (name, options) VALUES (?, ?)
+                """, (name, DB.to_json(options)))
+                self.commit()
+            except sqlite3.IntegrityError:
+                return -1
 
             return cursor.lastrowid
 
