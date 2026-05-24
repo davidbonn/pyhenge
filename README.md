@@ -26,8 +26,7 @@ This is an attempt to make a Stonehenge clone implemented in Python.
 3. Rendering causes excessive blank lines in some cases and not enough blank lines in other cases.
 4. Need to test multi-user.
 5. Clean up some of the uglier code.  Particularly about how unread messages are tracked by the user record.
-6. Catch SIGTERM and clean up terminal settings and database on the way out.
-7. Won't work smoothly if the same user is running two instances of pyhenge.
-8. Verbose options on .Read and .Show do nothing at the moment.
+6. Won't work smoothly if the same user is running two instances of pyhenge.
+7. Verbose options on .Read and .Show do nothing at the moment.
 
 
