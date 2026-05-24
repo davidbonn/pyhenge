@@ -29,4 +29,27 @@ This is an attempt to make a Stonehenge clone implemented in Python.
 6. Won't work smoothly if the same user is running two instances of pyhenge.
 7. Verbose options on .Read and .Show do nothing at the moment.
 
+## After all of those caveats, how do I run it?
 
+You need to have `uv` installed.  Check out https://docs.astral.sh/uv/getting-started/installation/
+for instructions on how to install it.
+
+After you've installed `uv`, you should be able to install python 3.14:
+
+```aiignore
+uv install python 3.14
+```
+Then you can run `pyhenge` with this command line:
+
+```aiignore
+uv run main.py
+```
+
+There are some modestly useful command-line options:
+
+* `--baud_rate rate` -- sets a simulated baud rate that throttles output to that speed.  Given how the Citadel user interface works you want to set this to 2400 or less.  Defaults to 1200.
+* `--verbose` -- has additional somewhat helpful output
+
+You can type `H` for Help and get a summary of commands and how the whole thing works.
+You can also type `?` to get a short menu.
+`?` also works with subcommands and the message editor.
