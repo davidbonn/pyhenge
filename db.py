@@ -43,11 +43,17 @@ class DB:
                 )
             """)
             cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_user_short_name ON users (short_name)
+            """)
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS rooms (
                     room_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT,
                     options TEXT
                 )
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_room_name ON rooms (name)
             """)
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS messages (
@@ -61,6 +67,9 @@ class DB:
                     room_id INTEGER,
                     message_id INTEGER
                 )
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_room_id ON rooms_messages (room_id)
             """)
             try:
                 cursor.execute("""
@@ -195,7 +204,8 @@ class DB:
     def newest_message(self, room_id: int) -> int:
         with cursor_for(self.conn) as cursor:
             cursor.execute("""
-                SELECT MAX(message_id)FROM rooms_messages WHERE room_id = ?""", (room_id,))
+                SELECT MAX(message_id) FROM rooms_messages WHERE room_id = ?
+            """, (room_id,))
 
             rc = cursor.fetchone()
 
@@ -203,19 +213,6 @@ class DB:
             return 0
 
         return int(rc[0])
-
-    def messages(self, room_id: int):
-        with cursor_for(self.conn) as cursor:
-            cursor.execute("""
-                SELECT message_id FROM rooms_messages WHERE room_id = ? ORDER BY message_id ASC
-            """, (room_id,))
-
-            rows = cursor.fetchall()
-
-        if rows is None:
-            return list()
-
-        return [int(r[0]) for r in rows]
 
     def rooms(self) -> list[dict]:
         all_rooms = self.rooms_as_dict()
