@@ -21,13 +21,11 @@ This is an attempt to make a Stonehenge clone implemented in Python.
 
 ## Things to think about and fix
 
-1. Database needs to have more keys defined for efficient searching and to maintain uniqueness constraints.
-2. Case-sensitive room names.  And a race condition with creating new rooms.
-3. Rendering causes excessive blank lines in some cases and not enough blank lines in other cases.
-4. Need to test multi-user.
-5. Clean up some of the uglier code.  Particularly about how unread messages are tracked by the user record.
-6. Won't work smoothly if the same user is running two instances of pyhenge.
-7. Verbose options on .Read and .Show do nothing at the moment.
+1. Rendering causes excessive blank lines in some cases and not enough blank lines in other cases.
+2. Need to test multi-user.
+3. Clean up some of the uglier code.  Particularly about how unread messages are tracked by the user record.
+4. Won't work smoothly if the same user is running two instances of pyhenge.
+5. Verbose options on .Read and .Show do nothing at the moment.
 
 ## After all of those caveats, how do I run it?
 
