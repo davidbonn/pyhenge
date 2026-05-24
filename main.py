@@ -180,7 +180,8 @@ class App:
                     self.update_messages()
             case [CommandsAndOptions.GOTO, room]:
                 if room is None:
-                    room = self.io.get_string('')
+                    """ a good place for tab completion """
+                    room = misc.normalize_room(self.io.get_string(''))
                     self.goto_room(room)
                 else:
                     self.goto_next_room()

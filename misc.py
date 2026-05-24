@@ -21,7 +21,6 @@ class UserOptions:
         if name in self.rooms:
             return self.rooms[name]
 
-        print(f" ---- setting self.rooms[{name}] to 0")
         self.rooms[name] = 0
         return 0
 
@@ -32,6 +31,10 @@ class UserOptions:
 def get_user() -> tuple:
     rc = pwd.getpwuid(os.getuid())
     return rc.pw_name, rc.pw_gecos
+
+
+def normalize_room(room: str) -> str:
+    return " ".join([k.capitalize() for k in room.split(" ") if len(k)])
 
 
 def known_rooms(io, db, verbose: int, user_options, verbose_option: int):
@@ -78,7 +81,7 @@ def status(io, db, verbose: int, verbose_option: int):
 
 def new_room(io, db, verbose: int):
     all_rooms = db.rooms_as_dict()
-    name = io.get_string("New Room: ")
+    name = normalize_room(io.get_string("New Room: "))
 
     if name in all_rooms:
         io.put_string(f"Room '{name}' already exists")
