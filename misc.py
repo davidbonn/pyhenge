@@ -80,12 +80,11 @@ def status(io, db, verbose: int, verbose_option: int):
 
 
 def new_room(io, db, verbose: int):
-    all_rooms = db.rooms_as_dict()
     name = normalize_room(io.get_string("New Room: "))
 
-    if name in all_rooms:
+    rc = db.new_room(name, dict())
+    if rc == -1:
         io.put_string(f"Room '{name}' already exists")
         io.new_lines()
         return
 
-    db.new_room(name, dict())
