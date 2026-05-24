@@ -1,7 +1,9 @@
 """ helper functions """
 
 import os
+from pathlib import Path
 import pwd
+import tomllib
 
 import input_output
 
@@ -67,6 +69,16 @@ def num_with_plural(val: int, singular, plural) -> str:
 
 
 def status(io, db, verbose: int, verbose_option: int):
+    version = None
+    p = Path('pyproject.toml')
+    if p.exists():
+        with open(str(p), 'rb') as f:
+            v = tomllib.load(f)
+            version = v["project"]["version"]
+
+    if version is not None:
+        io.put_string(f" pyhenge {version}")
+
     st = db.status()
 
     text = ""
