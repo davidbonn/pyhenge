@@ -79,6 +79,11 @@ class App:
             self.save_user()
 
     def goto_next_room(self):
+        """
+            there is an ugly inefficiency here where we basically do the identical
+            database queries twice, once here with self.db.rooms() and in self.goto_room()
+            with self.db.rooms_as_dict().
+        """
         rooms = self.db.rooms()
 
         if self.current_room is None:
