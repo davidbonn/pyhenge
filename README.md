@@ -29,6 +29,8 @@ This is an attempt to make a Stonehenge clone implemented in Python.
 6. Tab-completion would be nice and cool for .Help and .Goto
 7. There is an ugly inefficiency in the Goto <<next room>> code that forces the same sql query to be made twice.
 8. More Help and doco.
+9. Need to implement .Show Users .  Probably also need to track logged-in state somewhere too,
+10. We might need to implement .Enter Configuration .  But right now there is no configuration to enter.
 
 ## After all of those caveats, how do I run it?
 
