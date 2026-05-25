@@ -1,3 +1,4 @@
 file:henge.db
 # Project exclude paths
 /.venv/
+.env
