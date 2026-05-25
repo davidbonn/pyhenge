@@ -91,12 +91,20 @@ class App:
             self.io.new_lines()
             return
 
+        """
+            this code block is also a lot unPythonic and contrived and 
+            needs a rethink
+        """
+
+        # find the current room in the rooms list
         i = 0
         while i < len(rooms):
             if rooms[i]['name'] == self.current_room["name"]:
                 break
             i += 1
 
+        # if we aren't at the end of the rooms list, find the next room (if any)
+        # with unread messages
         if i < len(rooms):
             i += 1
 
@@ -106,6 +114,8 @@ class App:
 
                 i += 1
 
+        # if we are at the end of the rooms list, go back to the first room
+        # otherwise go to the room we are pointed at
         if i == len(rooms):
             nm = rooms[0]['name']
         else:
