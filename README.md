@@ -19,19 +19,6 @@ This is an attempt to make a Stonehenge clone implemented in Python.
 7. No provision for expiring old messages
 8. Some obscure advanced commands do not work
 
-## Things to think about and fix
-
-1. Rendering causes excessive blank lines in some cases and not enough blank lines in other cases.
-2. Need to test multi-user.
-3. Clean up some of the uglier code.  Particularly about how unread messages are tracked by the user record.
-4. Won't work smoothly if the same user is running two instances of pyhenge.
-5. Verbose options on .Read and .Show do nothing at the moment.
-6. Tab-completion would be nice and cool for .Help and .Goto
-7. There is an ugly inefficiency in the Goto <<next room>> code that forces the same sql query to be made twice.
-8. More Help and doco.
-9. Need to implement .Show Users .  Probably also need to track logged-in state somewhere too,
-10. We might need to implement .Enter Configuration .  But right now there is no configuration to enter.
-
 ## After all of those caveats, how do I run it?
 
 You need to have `uv` installed.  Check out https://docs.astral.sh/uv/getting-started/installation/
