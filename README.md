@@ -26,6 +26,9 @@ This is an attempt to make a Stonehenge clone implemented in Python.
 3. Clean up some of the uglier code.  Particularly about how unread messages are tracked by the user record.
 4. Won't work smoothly if the same user is running two instances of pyhenge.
 5. Verbose options on .Read and .Show do nothing at the moment.
+6. Tab-completion would be nice and cool for .Help and .Goto
+7. There is an ugly inefficiency in the Goto <<next room>> code that forces the same sql query to be made twice.
+8. More Help and doco.
 
 ## After all of those caveats, how do I run it?
 
