@@ -12,10 +12,10 @@ This is an attempt to make a Stonehenge clone implemented in Python.
 
 1. Networking
 2. Admin functions
-3. Groups, Hallways, Doors
-4. Directory Rooms
-5. Hidden Rooms
-6. No private mail
+3. Groups, Hallways, Doors.  Probably will _never_ do these.
+4. Directory Rooms.  Probably will _never_ do this.
+5. Hidden Rooms.  Probably will _never_ do this.
+6. No private mail.  Probably will _never_ do this.
 7. No provision for expiring old messages
 8. Some obscure advanced commands do not work
 
