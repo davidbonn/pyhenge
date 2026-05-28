@@ -49,7 +49,7 @@ class App:
             if debug:
                 print(f"User {self.user} not present, adding it to database")
 
-            null_dict = dict(admin=0,rooms=list())
+            null_dict = dict(admin=0,rooms=dict())
             new_id = self.db.new_user(self.user, self.full_name, null_dict)
             if debug:
                 print(f"New user ID: {new_id}")
