@@ -1,9 +1,11 @@
 #!/usr/bin/env uv run main.py
 
 import argparse
+from pathlib import Path
 import signal
 import time
 
+import config
 from db import DB
 from input_output import InputOutput, Formatter
 from command import Command, CommandsAndOptions
@@ -231,6 +233,12 @@ class App:
         self.io = InputOutput(self.baud_rate)
         self.command = Command(self.io)
         signal.signal(signal.SIGTERM, App.handler)
+
+        try:
+            fn = Path(config.db_url)
+            fn.chmod(0o666)
+        except OSError as e:
+            pass
 
         with self.db:
             self.setup_user()
