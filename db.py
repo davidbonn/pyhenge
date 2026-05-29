@@ -10,11 +10,14 @@ from config import db_url
 
 
 @contextmanager
-def cursor_for(conn):
+def cursor_for(conn, do_commit=False):
     cursor = conn.cursor()
     try:
         yield cursor
     finally:
+        if do_commit:
+            conn.commit()
+
         cursor.close()
 
 
@@ -33,7 +36,7 @@ class DB:
 
     def new(self):
         """ create tables if they don't exist"""
-        with cursor_for(self.conn) as cursor:
+        with cursor_for(self.conn, do_commit=True) as cursor:
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,9 +76,8 @@ class DB:
             """)
             try:
                 cursor.execute("""
-                    INSERT INTO rooms (room_id, name) VALUES (0, 'Lobby')
+                    INSERT INTO rooms (room_id, name, options) VALUES (0, 'Lobby', '{}')
                 """)
-                self.commit()
             except sqlite3.IntegrityError:
                 """ this is okay """
                 pass
@@ -89,7 +91,10 @@ class DB:
 
     @staticmethod
     def from_json(j: str) -> dict:
-        return json.loads(j)
+        try:
+            return json.loads(j)
+        except TypeError:
+            return {}
 
     @staticmethod
     def to_json(data: dict) -> str:
@@ -122,12 +127,11 @@ class DB:
             return dict(user_id=rc[0], short_name=rc[1], full_name=rc[2], options=DB.from_json(rc[3]))
 
     def new_user(self, short_name: str, full_name: str, options: dict):
-        with cursor_for(self.conn) as cursor:
+        with cursor_for(self.conn, do_commit=True) as cursor:
             try:
                 cursor.execute("""
                 INSERT INTO users (short_name, full_name, options) VALUES (?, ?, ?)
                 """, (short_name, full_name, DB.to_json(options)))
-                self.commit()
 
                 return cursor.lastrowid
             except sqlite3.IntegrityError:
@@ -135,12 +139,11 @@ class DB:
                 return None
 
     def update_user_options(self, user_id: int, user_data: dict):
-        with cursor_for(self.conn) as cursor:
+        with cursor_for(self.conn, do_commit=True) as cursor:
             try:
                 cursor.execute("""
                     UPDATE users SET options = ? WHERE user_id = ?
                 """, (DB.to_json(user_data), user_id))
-                self.commit()
             except sqlite3.IntegrityError:
                 print(f"user {user_id} update failed???")
 
@@ -158,23 +161,21 @@ class DB:
             return dict(room_id=int(rc[0]), name=rc[1], options=DB.from_json(rc[2]))
 
     def new_room(self, name: str, options: dict) -> int:
-        with cursor_for(self.conn) as cursor:
+        with cursor_for(self.conn, do_commit=True) as cursor:
             try:
                 cursor.execute("""
                     INSERT INTO rooms (name, options) VALUES (?, ?)
                 """, (name, DB.to_json(options)))
-                self.commit()
             except sqlite3.IntegrityError:
                 return -1
 
             return cursor.lastrowid
 
     def update_room_options(self, room_id: int, options: dict):
-        with cursor_for(self.conn) as cursor:
+        with cursor_for(self.conn, do_commit=True) as cursor:
             cursor.execute("""
                 UPDATE rooms SET options = ? WHERE room_id = ?
             """, (DB.to_json(options), room_id))
-            self.commit()
 
     def get_message(self, message_id: int) -> dict|None:
         with cursor_for(self.conn) as cursor:
@@ -190,19 +191,17 @@ class DB:
             return dict(message_id=int(rc[0]), headers=DB.from_json(rc[1]), body=rc[2])
 
     def new_message(self, body: str, headers: dict) -> int:
-        with cursor_for(self.conn) as cursor:
+        with cursor_for(self.conn, do_commit=True) as cursor:
             cursor.execute("""
                 INSERT INTO messages (body, headers) VALUES (?, ?)
             """, (body, DB.to_json(headers)))
-            self.commit()
             return cursor.lastrowid
 
     def note_message(self, message_id: int, room_id: int):
-        with cursor_for(self.conn) as cursor:
+        with cursor_for(self.conn, do_commit=True) as cursor:
             cursor.execute("""
                 INSERT INTO rooms_messages (room_id, message_id) VALUES (?, ?)
             """, (room_id, message_id))
-            self.commit()
 
     def newest_message(self, room_id: int) -> int:
         with cursor_for(self.conn) as cursor:
