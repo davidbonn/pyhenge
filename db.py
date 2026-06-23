@@ -13,7 +13,16 @@ from config import db_url
 def cursor_for(conn, do_commit=False):
     cursor = conn.cursor()
     try:
+        if do_commit:
+            cursor.execute("BEGIN IMMEDIATE TRANSACTION")
+
         yield cursor
+
+    except sqlite3.OperationalError as e:
+        if do_commit:
+            cursor.execute("ROLLBACK")
+            print(f"sqlite3 write failed: {e}")
+
     finally:
         if do_commit:
             conn.commit()
@@ -83,7 +92,11 @@ class DB:
                 pass
 
     def setup(self):
-        self.conn = sqlite3.connect(db_url)
+        self.conn = sqlite3.connect(db_url, timeout=10.0)
+        self.conn.isolation_level = None
+        self.conn.execute("PRAGMA journal_mode=WAL;")
+        self.conn.execute("PRAGMA synchronous=NORMAL;")
+        self.conn.execute("PRAGMA journal_size_limit=16777216;")
         self.new()
 
     def close(self):
