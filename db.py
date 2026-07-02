@@ -249,7 +249,7 @@ class DB:
             all_rooms = {r[1]: dict(name=r[1], room_id=int(r[0]), max=0) for r in rows}
 
             cursor.execute("""
-                SELECT rooms.name, MAX(rooms_messages.message_id) FROM rooms, rooms_messages WHERE rooms.room_id = rooms_messages.room_id GROUP BY rooms_messages.room_id ORDER BY rooms_messages.room_id ASC
+                SELECT rooms.name, MAX(rooms_messages.message_id) FROM rooms INNER JOIN main.rooms_messages ON rooms.room_id = rooms_messages.room_id GROUP BY rooms_messages.room_id ORDER BY rooms_messages.room_id ASC
             """)
 
             rows = cursor.fetchall()
