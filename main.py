@@ -266,16 +266,48 @@ class App:
                     return
 
 
+def check_db(verbose=False):
+    db = DB()
+    with db:
+        rooms = db.rooms_as_dict()
+        for room in sorted(rooms.keys()):
+            if verbose:
+                print(f"Checking room {room}, max message id: {rooms[room]['max']}")
+
+            current = db.get_room(rooms[room]['room_id'])
+            if current is None:
+                print(f"Error:  room {room} not present in database")
+                continue
+
+            last_msg = None
+            for msg_id in db.messages_in_room(current.get("room_id")):
+                last_msg = msg_id
+                if verbose:
+                    print(f"  Checking message {msg_id}")
+                msg = db.get_message(msg_id)
+
+                if msg is None:
+                    print(f"  Error:  message {msg_id} not present in database")
+                    continue
+
+            if last_msg is not None and last_msg != rooms[room]["max"]:
+                print(f"  Error:  room {room} has max message id {rooms[room]['max']} but last message id is {last_msg}")
+
+
+
 def main():
     print("Hello from pyhenge!")
 
     ap = argparse.ArgumentParser()
     ap.add_argument("-v", "--verbose", action="store_true",)
     ap.add_argument("-b", "--baud_rate", type=int, default=1200)
-
+    ap.add_argument("--check", action="store_true",)
     args = ap.parse_args()
 
-    App(args.verbose,args.baud_rate).mainloop()
+    if args.check:
+        check_db(args.verbose)
+    else:
+        App(args.verbose,args.baud_rate).mainloop()
 
 
 if __name__ == "__main__":
